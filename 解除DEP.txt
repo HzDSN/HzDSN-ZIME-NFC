@@ -1,0 +1,2 @@
+call "$(DevEnvDir)..\tools\vsvars32.bat"
+ editbin.exe /NXCOMPAT:NO "$(TargetPath)"
