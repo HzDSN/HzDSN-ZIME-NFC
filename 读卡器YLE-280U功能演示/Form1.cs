@@ -11,6 +11,8 @@ namespace 读卡器YLE_280U功能演示
 {
     public partial class FrmMain : Form
     {
+        Byte[] ReadBuf = new Byte[20];
+        int Status;
         public FrmMain()
         {
             InitializeComponent();
@@ -104,6 +106,27 @@ namespace 读卡器YLE_280U功能演示
                 RF_YLE280U.YLE280_GreenLedOff();
                 RF_YLE280U.YLE280_RedLedOn();
             }*/
+            Byte[] x = new Byte[20];
+            int result = RF_YLE280U.YLE280_GetSerialNo(x);
+            if(result == 0 && /*x.ToHexString() != ReadBuf.ToHexString() &&*/ Status != 0)
+            {
+                ReadBuf = x;
+                
+                string s = ReadBuf.ToHexString();
+                string t = string.Empty;
+                for (int i = s.Length - 2; i >= 0; i -= 2)
+                {
+                    t += s.Substring(i, 2);
+                    t += ":";
+                }
+                t = t.Substring(0, t.Length - 1);
+                while (t.StartsWith("00:"))
+                {
+                    t = t.Substring(3);
+                }
+                lbInfo.Items.Add("UID:" + t);
+            }
+            Status = result;
         }
 
         private void chkBuzzer_CheckedChanged(object sender, EventArgs e)
@@ -123,7 +146,7 @@ namespace 读卡器YLE_280U功能演示
 
         private void button_GetUID_Click(object sender, EventArgs e)
         {
-            Byte[] ReadBuf = new Byte[20];
+            
             int result = RF_YLE280U.YLE280_GetSerialNo(ReadBuf);
             if (result == RF_YLE280U.YLE280_OK)
             {
